@@ -1,0 +1,782 @@
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-sans);background:transparent}
+:root{
+  --ink:#09090f;--cream:#f5f1ea;--gold:#e8a825;--gold-lt:#f5c842;
+  --teal:#0a8a6e;--teal-lt:#12b88f;--rose:#c94040;--plum:#6b5ce7;
+  --muted:#7a7062;--border:#e5e0d8;
+}
+.wrap{max-width:680px;margin:0 auto;padding:0 0 40px}
+
+/* START SCREEN */
+.start-screen{min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;position:relative;overflow:hidden}
+.start-bg{position:absolute;inset:0;background:linear-gradient(135deg,#081a2e 0%,#0a4a6e 50%,#12b88f 100%);border-radius:16px}
+.start-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:32px 32px;border-radius:16px}
+.float-orb{position:absolute;border-radius:50%;animation:orb-float ease-in-out infinite}
+@keyframes orb-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.05)}}
+.start-inner{position:relative;z-index:2}
+.start-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,168,37,.15);border:1px solid rgba(232,168,37,.4);color:#f5c842;font-size:11px;padding:5px 14px;border-radius:100px;margin-bottom:20px;letter-spacing:1.5px;text-transform:uppercase}
+.dot-pulse{width:6px;height:6px;background:#f5c842;border-radius:50%;animation:dp 2s ease-in-out infinite}
+@keyframes dp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.8)}}
+.start-h1{font-size:36px;font-weight:700;color:#fff;line-height:1.1;margin-bottom:12px;letter-spacing:-.5px}
+.start-h1 em{font-style:italic;color:#f5c842}
+.start-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:28px;max-width:380px}
+.start-stats{display:flex;gap:12px;justify-content:center;margin-bottom:30px}
+.sstat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 20px;text-align:center}
+.sstat-num{font-size:26px;font-weight:700;color:#f5c842;line-height:1}
+.sstat-lbl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.8px;text-transform:uppercase;margin-top:3px}
+.start-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0a8a6e,#12b88f);color:#fff;border:none;border-radius:100px;padding:16px 36px;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s;box-shadow:0 8px 32px rgba(10,138,110,.4)}
+.start-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 40px rgba(10,138,110,.55)}
+.start-btn .btn-arrow{width:20px;height:20px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px}
+.floatie{position:absolute;font-size:28px;animation:float-ico ease-in-out infinite}
+@keyframes float-ico{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(8deg)}}
+
+/* XP BAR TOP */
+.xp-topbar{height:3px;background:rgba(0,0,0,.1);border-radius:100px;margin-bottom:0;overflow:hidden}
+.xp-topbar-fill{height:100%;background:linear-gradient(90deg,#0a8a6e,#f5c842);width:0%;transition:width .6s cubic-bezier(.34,1.2,.64,1);border-radius:100px}
+
+/* PROGRESS */
+.prog-wrap{padding:14px 20px 10px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.prog-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.prog-label{font-size:12px;color:var(--color-text-secondary)}
+.prog-xp{display:flex;align-items:center;gap:5px;background:rgba(232,168,37,.12);border:1px solid rgba(232,168,37,.3);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:600;color:#b8851f}
+.prog-dots{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.pdot{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--color-border-secondary);background:var(--color-background-primary);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--color-text-secondary);transition:all .3s;cursor:default}
+.pdot.done{background:#09090f;border-color:#09090f;color:#fff}
+.pdot.active{background:#0a8a6e;border-color:#0a8a6e;color:#fff;transform:scale(1.15);box-shadow:0 0 0 4px rgba(10,138,110,.18)}
+.prog-track{height:4px;background:var(--color-border-tertiary);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#0a8a6e,#f5c842);border-radius:100px;transition:width .5s cubic-bezier(.34,1.2,.64,1)}
+
+/* BANNER */
+.sec-banner{width:100%;height:120px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.ban-ico-wrap{font-size:0;position:relative;z-index:1}
+.ban-img{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2)}
+.ban-label{font-size:12px;color:rgba(255,255,255,.75);font-weight:600;letter-spacing:.5px;position:relative;z-index:1}
+.ban-particles span{position:absolute;border-radius:50%;background:rgba(255,255,255,.35);animation:bp-float linear infinite}
+@keyframes bp-float{0%{transform:translateY(120px) scale(0);opacity:0}50%{opacity:.4}100%{transform:translateY(-20px) scale(1);opacity:0}}
+
+/* SECTION CARD */
+.sec-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;animation:su .3s cubic-bezier(.22,.68,0,1.2)}
+@keyframes su{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.sec-body{padding:24px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sec-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sec-title{font-size:16px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.sec-sub{font-size:12px;color:var(--color-text-secondary)}
+
+/* GREETING CHIP */
+.greet-chip{display:flex;align-items:center;gap:8px;background:rgba(10,138,110,.07);border:0.5px solid rgba(10,138,110,.2);border-radius:8px;padding:9px 13px;margin-bottom:18px;font-size:13px;color:#0a8a6e;font-weight:500}
+
+/* FIELDS */
+.fld{margin-bottom:16px}
+.lbl{display:block;font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.req{color:#c94040;margin-left:2px}
+input[type=text],input[type=email],select,textarea{width:100%;padding:10px 13px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:14px;color:var(--color-text-primary);background:var(--color-background-primary);outline:none;transition:border-color .2s;font-family:var(--font-sans)}
+input[type=text]:focus,input[type=email]:focus,select:focus,textarea:focus{border-color:#0a8a6e;box-shadow:0 0 0 3px rgba(10,138,110,.1)}
+textarea{min-height:76px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.span2{grid-column:span 2}
+@media(max-width:480px){.grid2{grid-template-columns:1fr}.span2{grid-column:span 1}}
+
+/* SLIDER */
+.sl-val{text-align:center;font-size:32px;font-weight:700;color:#0a8a6e;margin-bottom:4px;transition:transform .15s}
+.sl-val.bump{transform:scale(1.25)}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:100px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#0a8a6e;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(10,138,110,.35);cursor:grab}
+input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1.25)}
+.sl-lbls{display:flex;justify-content:space-between;font-size:10px;color:var(--color-text-secondary);margin-top:4px}
+
+/* MOTIVATIONS */
+.motiv-list{display:flex;flex-direction:column;gap:7px}
+.mitem{display:flex;align-items:center;gap:10px;padding:10px 13px;border:0.5px solid var(--color-border-secondary);border-radius:9px;cursor:pointer;transition:all .2s;background:var(--color-background-primary)}
+.mitem:hover{border-color:#0a8a6e}
+.mitem.on{border-color:#0a8a6e;background:rgba(10,138,110,.06)}
+.mcb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--color-border-secondary);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:10px;color:#fff}
+.mitem.on .mcb{background:#0a8a6e;border-color:#0a8a6e}
+.mitem.on .mcb::after{content:'✓'}
+.mico{font-size:16px;width:22px;text-align:center}
+.mlbl{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:7px 16px;border:0.5px solid var(--color-border-secondary);border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;color:var(--color-text-secondary);background:var(--color-background-primary)}
+.chip:hover{border-color:#0a8a6e;color:#0a8a6e}
+.chip.on{background:#0a8a6e;border-color:#0a8a6e;color:#fff;transform:scale(1.04)}
+
+/* YES NO */
+.yn{display:flex;gap:10px}
+.yn-btn{flex:1;padding:12px;border:0.5px solid var(--color-border-secondary);border-radius:9px;text-align:center;cursor:pointer;transition:all .2s;font-weight:600;font-size:13px;background:var(--color-background-primary);color:var(--color-text-secondary)}
+.yn-btn:hover{border-color:#0a8a6e}
+.yn-btn.y{background:rgba(10,138,110,.08);border-color:#0a8a6e;color:#0a8a6e}
+.yn-btn.n{background:rgba(201,64,64,.06);border-color:#c94040;color:#c94040}
+
+/* STARS */
+.star-row{display:flex;gap:8px}
+.star{font-size:34px;cursor:pointer;transition:all .2s;filter:grayscale(1) opacity(.25);line-height:1}
+.star.on{filter:none}
+.star:hover{transform:scale(1.15)}
+
+/* ERROR BANNER */
+.err-box{background:rgba(201,64,64,.07);border:0.5px solid rgba(201,64,64,.3);border-radius:8px;padding:9px 13px;margin-bottom:14px;font-size:12px;color:#c94040;display:none;align-items:center;gap:8px}
+.err-box.show{display:flex}
+
+/* NAV */
+.form-nav{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding-top:18px;border-top:0.5px solid var(--color-border-tertiary)}
+.nav-left,.nav-right{display:flex;align-items:center;gap:10px}
+.step-lbl{font-size:11px;color:var(--color-text-secondary)}
+.btn-prev-sec{padding:10px 22px;border:0.5px solid var(--color-border-secondary);border-radius:100px;background:var(--color-background-primary);color:var(--color-text-secondary);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;font-family:var(--font-sans)}
+.btn-prev-sec:hover{border-color:var(--color-border-primary);color:var(--color-text-primary)}
+.btn-next-sec{padding:10px 24px;background:#09090f;color:#fff;border:none;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-sans)}
+.btn-next-sec:hover{background:#0a8a6e;transform:translateY(-1px)}
+.btn-submit{padding:10px 26px;background:linear-gradient(135deg,#0a8a6e,#12b88f);color:#fff;border:none;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-sans)}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(10,138,110,.35)}
+
+/* XP TOAST */
+.xp-toast{position:fixed;bottom:20px;right:16px;background:#09090f;border:1.5px solid #e8a825;border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(20px);transition:all .4s;pointer-events:none;z-index:999}
+.xp-toast.show{opacity:1;transform:translateY(0)}
+.xp-toast-ico{font-size:16px}
+.xp-toast-txt{font-size:12px;font-weight:600;color:#f5c842}
+
+/* BADGE TOAST */
+.badge-toast{position:fixed;top:10px;left:50%;transform:translateX(-50%) translateY(-80px);background:#09090f;border:1.5px solid #e8a825;border-radius:14px;padding:12px 20px;display:flex;align-items:center;gap:10px;z-index:1000;transition:all .5s cubic-bezier(.34,1.4,.64,1);white-space:nowrap;pointer-events:none}
+.badge-toast.show{transform:translateX(-50%) translateY(0)}
+.bt-ico{font-size:22px}
+.bt-title{font-size:13px;font-weight:600;color:#f5c842}
+.bt-sub{font-size:11px;color:rgba(255,255,255,.5)}
+
+/* SUCCESS */
+.success-wrap{text-align:center;padding:48px 24px}
+.conf-wrap{height:100px;position:relative;overflow:hidden;margin-bottom:8px}
+.conf-particle{position:absolute;width:8px;height:8px;border-radius:2px;animation:conf-fall linear forwards}
+@keyframes conf-fall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(110px) rotate(360deg);opacity:0}}
+.success-ico{width:72px;height:72px;background:linear-gradient(135deg,#0a8a6e,#12b88f);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px;animation:pop .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:scale(1);opacity:1}}
+.success-h{font-size:26px;font-weight:700;color:var(--color-text-primary);margin-bottom:8px}
+.success-p{font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px}
+.badges-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.b-item{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:10px 14px;text-align:center;min-width:72px}
+.b-ico{font-size:22px;margin-bottom:4px}
+.b-name{font-size:10px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.5px}
+.final-xp{display:inline-flex;align-items:center;gap:8px;background:rgba(232,168,37,.1);border:1px solid rgba(232,168,37,.3);border-radius:100px;padding:8px 20px;font-size:15px;font-weight:600;color:#b8851f;margin-bottom:24px}
+.restart-btn{padding:12px 28px;background:#09090f;color:#fff;border:none;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-sans)}
+.restart-btn:hover{background:#0a8a6e;transform:translateY(-1px)}
+</style>
+
+<div class="wrap" id="app">
+
+<div class="xp-topbar"><div class="xp-topbar-fill" id="xpBarTop"></div></div>
+
+<div id="xpToast" class="xp-toast"><span class="xp-toast-ico">⚡</span><span class="xp-toast-txt" id="xpToastTxt">+50 XP</span></div>
+<div id="badgeToast" class="badge-toast"><span class="bt-ico" id="btIco">🏆</span><div><div class="bt-title" id="btTitle">Badge!</div><div class="bt-sub" id="btSub">Section complete</div></div></div>
+
+<!-- START SCREEN -->
+<div id="startScreen">
+  <div class="start-screen">
+    <div class="start-bg"></div>
+    <div class="start-grid"></div>
+    <div class="ban-particles" id="startParticles"></div>
+
+    <span class="floatie" style="top:18%;left:8%;animation-duration:3.2s;animation-delay:0s">🎓</span>
+    <span class="floatie" style="top:14%;right:9%;animation-duration:2.8s;animation-delay:.6s">💡</span>
+    <span class="floatie" style="bottom:22%;left:6%;animation-duration:3.5s;animation-delay:1s">📚</span>
+    <span class="floatie" style="bottom:18%;right:8%;animation-duration:2.6s;animation-delay:.3s">🚀</span>
+
+    <div class="float-orb" style="width:140px;height:140px;background:rgba(10,138,110,.18);top:-30px;right:-30px;animation-duration:4s"></div>
+    <div class="float-orb" style="width:100px;height:100px;background:rgba(107,92,231,.15);bottom:-20px;left:-20px;animation-duration:5s;animation-delay:1s"></div>
+    <div class="float-orb" style="width:60px;height:60px;background:rgba(232,168,37,.2);bottom:30%;right:5%;animation-duration:3.5s;animation-delay:.5s"></div>
+
+    <div class="start-inner">
+      <div class="start-badge"><div class="dot-pulse"></div>Student Survey 2026</div>
+      <div class="start-h1">Student <em>Pulse</em> —<br>Insights on Learning,<br>Growth &amp; University Life</div>
+      <div class="start-sub">Exploring student engagement, mindset &amp; readiness for the future in higher education.</div>
+      <div class="start-stats">
+        <div class="sstat"><div class="sstat-num">8</div><div class="sstat-lbl">Sections</div></div>
+        <div class="sstat"><div class="sstat-num">400</div><div class="sstat-lbl">XP to earn</div></div>
+        <div class="sstat"><div class="sstat-num">8</div><div class="sstat-lbl">Badges</div></div>
+      </div>
+      <button class="start-btn" onclick="startSurvey()">
+        Start Your Journey
+        <div class="btn-arrow">→</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SURVEY -->
+<div id="surveyArea" style="display:none">
+  <div class="prog-wrap" id="progWrap">
+    <div class="prog-meta">
+      <span class="prog-label" id="progLabel">Section 1 of 8</span>
+      <div class="prog-xp">⚡ <span id="xpDisplay">0</span> XP</div>
+    </div>
+    <div class="prog-dots" id="progDots"></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+
+  <div style="padding:16px 0 0">
+
+  <!-- SEC 1 -->
+  <div class="sec-card" id="sec1">
+    <div class="sec-banner" style="background:linear-gradient(135deg,#081a2e,#0a4a6e 60%,#12b88f)">
+      <div class="ban-particles" id="bp1"></div>
+      <div class="ban-img">🎓</div>
+      <div class="ban-label">Your Academic Identity</div>
+    </div>
+    <div class="sec-body">
+      <div class="sec-head">
+        <div class="sec-icon" style="background:rgba(10,138,110,.1)">📋</div>
+        <div><div class="sec-title">General Information</div><div class="sec-sub">Tell us about yourself to get started</div></div>
+      </div>
+      <div class="err-box" id="err1"><span>⚠</span><span id="err1msg">Please fill all required fields.</span></div>
+      <div class="grid2">
+        <div class="fld"><label class="lbl">Full Name <span class="req">*</span></label><input type="text" id="name" placeholder="e.g. Arjun Sharma" oninput="onName(this.value)"></div>
+        <div class="fld"><label class="lbl">Enrollment No. <span class="req">*</span></label><input type="text" id="enrollNo" placeholder="e.g. 2021CS1234"></div>
+        <div class="fld"><label class="lbl">Branch <span class="req">*</span></label>
+          <select id="branch">
+            <option value="">Select Branch</option>
+            <option>Computer Science Engineering</option>
+            <option>Electronics &amp; Communication</option>
+            <option>Mechanical Engineering</option>
+            <option>Civil Engineering</option>
+            <option>Electrical Engineering</option>
+            <option>Information Technology</option>
+            <option>Biotechnology</option>
+            <option>MBA</option><option>MCA</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fld"><label class="lbl">Specialization</label><input type="text" id="spec" placeholder="e.g. Artificial Intelligence"></div>
+        <div class="fld span2"><label class="lbl">Email Address <span class="req">*</span></label><input type="email" id="email" placeholder="you@university.edu"></div>
+      </div>
+      <div class="form-nav">
+        <div class="nav-left"><span class="step-lbl">Step 1 / 8</span></div>
+        <div class="nav-right"><button class="btn-next-sec" onclick="next(1)">Next →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEC 2 -->
+  <div class="sec-card" id="sec2" style="display:none">
+    <div class="sec-banner" style="background:linear-gradient(135deg,#160b2e,#3d1a88 60%,#6b5ce7)">
+      <div class="ban-particles" id="bp2"></div>
+      <div class="ban-img">💡</div>
+      <div class="ban-label">Learning &amp; Motivation</div>
+    </div>
+    <div class="sec-body">
+      <div class="sec-head">
+        <div class="sec-icon" style="background:rgba(107,92,231,.1)">🧠</div>
+        <div><div class="sec-title">Your Learning Mindset &amp; Motivation</div><div class="sec-sub">How passion drives your academic journey</div></div>
+      </div>
+      <div class="greet-chip" id="greet2">✨ <span id="greet2txt">Great to have you here!</span></div>
+      <div class="err-box" id="err2"><span>⚠</span><span id="err2msg">Please fill required fields.</span></div>
+      <div class="fld">
+        <label class="lbl">How much do you enjoy learning? <span class="req">*</span></label>
+        <div class="sl-val" id="sv-enjoy">5</div>
+        <input type="range" id="sl-enjoy" min="1" max="10" value="5" oninput="slUpdate(this,'sv-enjoy')">
+        <div class="sl-lbls"><span>1 — Not at all</span><span>10 — Absolutely love it!</span></div>
+      </div>
+      <div class="grid2">
+        <div class="fld"><label class="lbl">Personal Interests</label><input type="text" id="interests" placeholder="e.g. AI, Robotics, Music"></div>
+        <div class="fld"><label class="lbl">Career Goals</label><input type="text" id="careerGoals" placeholder="e.g. Software Engineer"></div>
+      </div>
+      <div class="fld">
+        <label class="lbl">What motivates you to engage in coursework? <span class="req">*</span></label>
+        <div class="motiv-list" id="motivList">
+          <div class="mitem" onclick="togMotiv(this,'Personal Interest')"><div class="mcb"></div><span class="mico">🌟</span><span class="mlbl">Personal Interest</span></div>
+          <div class="mitem" onclick="togMotiv(this,'Career Goals')"><div class="mcb"></div><span class="mico">🎯</span><span class="mlbl">Career Goals</span></div>
+          <div class="mitem" onclick="togMotiv(this,'Faculty Influence')"><div class="mcb"></div><span class="mico">👩‍🏫</span><span class="mlbl">Faculty Influence</span></div>
+          <div class="mitem" onclick="togMotiv(this,'Peer Pressure')"><div class="mcb"></div><span class="mico">👥</span><span class="mlbl">Peer Pressure</span></div>
+          <div class="mitem" onclick="togMotiv(this,'Other Factors')"><div class="mcb"></div><span class="mico">✨</span><span class="mlbl">Other Factors</span></div>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="lbl">Biggest Distractions While Studying <span class="req">*</span></label>
+        <textarea id="distractions" placeholder="e.g. social media, gaming..."></textarea>
+      </div>
+      <div class="form-nav">
+        <div class="nav-left"><button class="btn-prev-sec" onclick="prev(2)">← Previous</button><span class="step-lbl">Step 2 / 8</span></div>
+        <div class="nav-right"><button class="btn-next-sec" onclick="next(2)">Next →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEC 3 -->
+  <div class="sec-card" id="sec3" style="display:none">
+    <div class="sec-banner" style="background:linear-gradient(135deg,#1a1505,#5a4a10 60%,#e8a825)">
+      <div class="ban-particles" id="bp3"></div>
+      <div class="ban-img">👨‍👩‍👧‍👦</div>
+      <div class="ban-label">Peer &amp; Family Dynamics</div>
+    </div>
+    <div class="sec-body">
+      <div class="sec-head">
+        <div class="sec-icon" style="background:rgba(232,168,37,.12)">🤝</div>
+        <div><div class="sec-title">Peer and Family Influence</div><div class="sec-sub">On your academic journey</div></div>
+      </div>
+      <div class="greet-chip" id="greet3">🤝 <span id="greet3txt">Tell us about your support system.</span></div>
+      <div class="err-box" id="err3"><span>⚠</span><span id="err3msg">Please answer all required questions.</span></div>
+      <div class="fld">
+        <label class="lbl">Do you feel pressured by peers academically? <span class="req">*</span></label>
+        <div class="yn" id="yn-peer">
+          <div class="yn-btn" onclick="pickYN('yn-peer',this,'Yes','peerPressure')">👍 Yes</div>
+          <div class="yn-btn" onclick="pickYN('yn-peer',this,'No','peerPressure')">👎 No</div>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="lbl">How do family expectations influence your career choices? <span class="req">*</span></label>
+        <textarea id="familyExp" placeholder="Share your thoughts..."></textarea>
+      </div>
+      <div class="form-nav">
+        <div class="nav-left"><button class="btn-prev-sec" onclick="prev(3)">← Previous</button><span class="step-lbl">Step 3 / 8</span></div>
+        <div class="nav-right"><button class="btn-next-sec" onclick="next(3)">Next →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEC 4 -->
+  <div class="sec-card" id="sec4" style="display:none">
+    <div class="sec-banner" style="background:linear-gradient(135deg,#1a0808,#6a1010 60%,#c94040)">
+      <div class="ban-particles" id="bp4"></div>
+      <div class="ban-img">🏫</div>
+      <div class="ban-label">University Life Experience</div>
+    </div>
+    <div class="sec-body">
+      <div class="sec-head">
+        <div class="sec-icon" style="background:rgba(201,64,64,.1)">🏫</div>
+        <div><div class="sec-title">University Life: Good, Bad &amp; Wishlist</div><div class="sec-sub">Your honest take on campus experience</div></div>
+      </div>
+      <div class="greet-chip" id="greet4">🏛️ <span id="greet4txt">We want the real story!</span></div>
+      <div class="err-box" id="err4"><span>⚠</span><span id="err4msg">Please tell us what you enjoy most.</span></div>
+      <div class="fld"><label class="lbl">What do you enjoy most about university life? <span class="req">*</span></label><textarea id="uniEnjoy" placeholder="e.g. clubs, labs, friendships..."></textarea></div>
+      <div class="fld"><label class="lbl">What needs improvement?</label><textarea id="uniBroken" placeholder="Be honest — what frustrates you?"></textarea></div>
+      <div class="fld"><label class="lbl">If you could change ONE thing?</label><input type="text" id="uniChange" placeholder="e.g. better internet, more industry exposure"></div>
+      <div class="form-nav">
+        <div class="nav-left"><button class="btn-prev-sec" onclick="prev(4)">← Previous</button><span class="step-lbl">Step 4 / 8</span></div>
+        <div class="nav-right"><button class="btn-next-sec" onclick="next(4)">Next →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEC 5 -->
+  <div class="sec-card" id="sec5" style="display:none">
+    <div class="sec-banner" style="background:linear-gradient(135deg,#061a0e,#0d5a30 60%,#12b88f)">
+      <div class="ban-particles" id="bp5"></div>
+      <div class="ban-img">👩‍🏫</div>
+      <div class="ban-label">Faculty Engagement</div>
+    </div>
+    <div class="sec-body">
+      <div class="sec-head">
+        <div class="sec-icon" style="background:rgba(10,138,110,.1)">🎓</div>
+        <div><div class="sec-title">Faculty Engagement &amp; Learning</div><div class="sec-sub">Your relationship with educators</div></div>
+      </div>
+      <div class="greet-chip" id="greet5">📚 <span id="greet5txt">Faculty can make or break the experience!</span></div>
+      <div class="err-box" id="err5"><span>⚠</span><span id="err5msg">Please answer required questions.</span></div>
+      <div class="fld">
+        <label class="lbl">How often do you interact with faculty beyond classes? <span class="req">*</span></label>
+        <div class="chips" id="ch-facFreq">
+          <div class="chip" onclick="pickChip('ch-facFreq',this,'facultyFreq','Never')">🚫 Never</div>
+          <div class="chip" onclick="pickChip('ch-facFreq',this,'facultyFreq','Sometimes')">🤔 Sometimes</div>
+          <div class="chip" onclick="pickChip('ch-facFreq',this,'facultyFreq','Often')">✅ Often</div>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="lbl">Do you find faculty approachable and supportive? <span class="req">*</span></label>
+        <div class="yn" id="yn-fac">
+          <div class="yn-btn" onclick="pickYN('yn-fac',this,'Yes','facApproach')">✅ Yes</div>
+          <div class="yn-btn" onclick="pickYN('yn-fac',this,'No','facApproach')">❌ No</div>
+        </div>
+      </div>
+      <div class="form-nav">
+        <div class="nav-left"><button class="btn-prev-sec" onclick="prev(5)">← Previous</button><span class="step-lbl">Step 5 / 8</span></div>
+        <div class="nav-right"><button class="btn-next-sec" onclick="next(5)">Next →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEC 6 -->
+  <div class="sec-card" id="sec6" style="display:none">
+    <div class="sec-banner" style="background:linear-gradient(135deg,#080c1a,#1a2060 60%,#3a5ce7)">
+      <div class="ban-particles" id="bp6"></div>
+      <div class="ban-img">💼</div>
+      <div class="ban-label">Real-World Learning</div>
+    </div>
+    <div class="sec-body">
+      <div class="sec-head">
+        <div class="sec-icon" style="background:rgba(107,92,231,.1)">💼</div>
+        <div><div class="sec-title">Real-World Learning &amp; Industry Exposure</div><div class="sec-sub">Bridging academics and professional experience</div></div>
+      </div>
+      <div class="greet-chip" id="greet6">🌍 <span id="greet6txt">Real-world experience is invaluable!</span></div>
+      <div class="err-box" id="err6"><span>⚠</span><span id="err6msg">Please answer required questions.</span></div>
+      <div class="fld">
+        <label class="lbl">Have you participated in an internship or industry project? <span class="req">*</span></label>
+        <div class="yn" id="yn-intern">
+          <div class="yn-btn" onclick="pickYN('yn-intern',this,'Yes','internship')">✅ Yes</div>
+          <div class="yn-btn" onclick="pickYN('yn-intern',this,'No','internship')">❌ No</div>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="lbl">Does your coursework prepare you for real-world challenges?</label>
+        <div class="chips" id="ch-prep">
+          <div class="chip" onclick="pickChip('ch-prep',this,'prep','Strongly Yes')">💪 Strongly Yes</div>
+          <div class="chip" onclick="pickChip('ch-prep',this,'prep','Partially')">🤏 Partially</div>
+          <div class="chip" onclick="pickChip('ch-prep',this,'prep','Neutral')">😐 Neutral</div>
+          <div class="chip" onclick="pickChip('ch-prep',this,'prep','Not Really')">😕 Not Really</div>
+        </div>
+      </div>
+      <div class="form-nav">
+        <div class="nav-left"><button class="btn-prev-sec" onclick="prev(6)">← Previous</button><span class="step-lbl">Step 6 / 8</span></div>
+        <div class="nav-right"><button class="btn-next-sec" onclick="next(6)">Next →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEC 7 -->
+  <div class="sec-card" id="sec7" style="display:none">
+    <div class="sec-banner" style="background:linear-gradient(135deg,#1a0e06,#5a3010 60%,#e8681a)">
+      <div class="ban-particles" id="bp7"></div>
+      <div class="ban-img">📈</div>
+      <div class="ban-label">Self-Development &amp; Future Skills</div>
+    </div>
+    <div class="sec-body">
+      <div class="sec-head">
+        <div class="sec-icon" style="background:rgba(232,168,37,.12)">📈</div>
+        <div><div class="sec-title">Self-Development &amp; Future-Ready Skills</div><div class="sec-sub">Building yourself beyond the curriculum</div></div>
+      </div>
+      <div class="greet-chip" id="greet7">🚀 <span id="greet7txt">The best investment is in yourself!</span></div>
+      <div class="err-box" id="err7"><span>⚠</span><span id="err7msg">Please answer required questions.</span></div>
+      <div class="fld">
+        <label class="lbl">Do you actively engage in self-learning? <span class="req">*</span></label>
+        <div class="yn" id="yn-selflearn">
+          <div class="yn-btn" onclick="pickYN('yn-selflearn',this,'Yes','selfLearn')">✅ Yes</div>
+          <div class="yn-btn" onclick="pickYN('yn-selflearn',this,'No','selfLearn')">❌ No</div>
+        </div>
+      </div>
+      <div class="fld"><label class="lbl">Skills learned outside coursework?</label><textarea id="extraSkills" placeholder="e.g. Python, public speaking..."></textarea></div>
+      <div class="fld">
+        <label class="lbl">Is your university experience challenging? <span class="req">*</span></label>
+        <div class="yn" id="yn-challenge">
+          <div class="yn-btn" onclick="pickYN('yn-challenge',this,'Yes','challenge')">✅ Yes</div>
+          <div class="yn-btn" onclick="pickYN('yn-challenge',this,'No','challenge')">❌ No</div>
+        </div>
+      </div>
+      <div class="fld"><label class="lbl">How would you improve the university ecosystem?</label><textarea id="improve" placeholder="Your ideas matter!"></textarea></div>
+      <div class="form-nav">
+        <div class="nav-left"><button class="btn-prev-sec" onclick="prev(7)">← Previous</button><span class="step-lbl">Step 7 / 8</span></div>
+        <div class="nav-right"><button class="btn-next-sec" onclick="next(7)">Next →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEC 8 -->
+  <div class="sec-card" id="sec8" style="display:none">
+    <div class="sec-banner" style="background:linear-gradient(135deg,#170812,#601040 60%,#c94080)">
+      <div class="ban-particles" id="bp8"></div>
+      <div class="ban-img">🏛️</div>
+      <div class="ban-label">Policy Awareness &amp; Future Readiness</div>
+    </div>
+    <div class="sec-body">
+      <div class="sec-head">
+        <div class="sec-icon" style="background:rgba(201,64,64,.1)">🏛️</div>
+        <div><div class="sec-title">Policies &amp; Higher Education Landscape</div><div class="sec-sub">Your understanding of the bigger picture</div></div>
+      </div>
+      <div class="greet-chip" id="greet8">🏆 <span id="greet8txt">Almost done — final stretch!</span></div>
+      <div class="err-box" id="err8"><span>⚠</span><span id="err8msg">Please complete required fields.</span></div>
+      <div class="grid2">
+        <div class="fld"><label class="lbl">What does NEP 2020 stand for?</label><input type="text" id="nep" placeholder="Full form of NEP 2020"></div>
+        <div class="fld"><label class="lbl">NEP 2020 features you connect with?</label><input type="text" id="nepFeatures" placeholder="e.g. SDG, Inclusivity..."></div>
+      </div>
+      <div class="fld">
+        <label class="lbl">Aware of your university's accreditation &amp; ranking? <span class="req">*</span></label>
+        <div class="yn" id="yn-accred">
+          <div class="yn-btn" onclick="pickYN('yn-accred',this,'Yes','accreditation')">✅ Yes</div>
+          <div class="yn-btn" onclick="pickYN('yn-accred',this,'No','accreditation')">❌ No</div>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="lbl">Entrepreneurial mindset interest? <span class="req">*</span></label>
+        <div class="chips" id="ch-entre">
+          <div class="chip" onclick="pickChip('ch-entre',this,'entre','Highly Motivated')">🔥 Highly Motivated</div>
+          <div class="chip" onclick="pickChip('ch-entre',this,'entre','Moderately Interested')">📈 Moderate</div>
+          <div class="chip" onclick="pickChip('ch-entre',this,'entre','Neutral')">😐 Neutral</div>
+          <div class="chip" onclick="pickChip('ch-entre',this,'entre','Not Interested')">👋 Not Interested</div>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="lbl">How likely to recommend your university? (0–10)</label>
+        <div class="sl-val" id="sv-rec">7</div>
+        <input type="range" id="sl-rec" min="0" max="10" value="7" oninput="slUpdate(this,'sv-rec')">
+        <div class="sl-lbls"><span>0 — Never</span><span>10 — Absolutely!</span></div>
+      </div>
+      <div class="fld">
+        <label class="lbl">Rate your overall experience this year <span class="req">*</span></label>
+        <div class="star-row" id="starRow">
+          <span class="star" onclick="pickStar(1)">⭐</span>
+          <span class="star" onclick="pickStar(2)">⭐</span>
+          <span class="star" onclick="pickStar(3)">⭐</span>
+          <span class="star" onclick="pickStar(4)">⭐</span>
+          <span class="star" onclick="pickStar(5)">⭐</span>
+        </div>
+      </div>
+      <div class="form-nav">
+        <div class="nav-left"><button class="btn-prev-sec" onclick="prev(8)">← Previous</button><span class="step-lbl">Step 8 / 8</span></div>
+        <div class="nav-right"><button class="btn-submit" onclick="submitSurvey()">Submit Survey 🚀</button></div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div id="successArea" style="display:none">
+  <div class="success-wrap">
+    <div class="conf-wrap" id="confWrap"></div>
+    <div class="success-ico">✓</div>
+    <div class="success-h">Thank you for sharing!</div>
+    <div class="success-p">Your response has been recorded.<br>Your insights help shape a better university for everyone.</div>
+    <div class="final-xp">⚡ <span id="finalXP">400</span> XP earned!</div>
+    <div class="badges-row" id="badgesRow"></div>
+    <button class="restart-btn" onclick="location.reload()">← Submit Another Response</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const TOTAL=8;
+const BADGES=[
+  {sec:1,ico:'🎓',name:'Enrolled'},
+  {sec:2,ico:'🧠',name:'Thinker'},
+  {sec:3,ico:'🤝',name:'Connected'},
+  {sec:4,ico:'🏫',name:'Campus Pro'},
+  {sec:5,ico:'📚',name:'Scholar'},
+  {sec:6,ico:'💼',name:'Pro Ready'},
+  {sec:7,ico:'🚀',name:'Self-Made'},
+  {sec:8,ico:'🏆',name:'Visionary'},
+];
+let cur=1,xp=0,userName='',motivPicks=[],picks={},starVal=0,earnedBadges=[];
+
+function startSurvey(){
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('surveyArea').style.display='block';
+  initDots();
+  refreshProg();
+  initParticles();
+}
+
+function initDots(){
+  const c=document.getElementById('progDots');c.innerHTML='';
+  for(let i=1;i<=TOTAL;i++){
+    const d=document.createElement('div');
+    d.className='pdot'+(i===1?' active':'');
+    d.id='dot'+i;d.textContent=i;c.appendChild(d);
+  }
+}
+
+function refreshProg(){
+  for(let i=1;i<=TOTAL;i++){
+    const d=document.getElementById('dot'+i);
+    if(!d)continue;
+    if(i<cur)d.className='pdot done';
+    else if(i===cur)d.className='pdot active';
+    else d.className='pdot';
+  }
+  const pct=Math.round((cur-1)/(TOTAL)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('xpBarTop').style.width=pct+'%';
+  document.getElementById('progLabel').textContent='Section '+cur+' of '+TOTAL;
+}
+
+function slUpdate(el,vid){
+  const v=document.getElementById(vid);
+  v.textContent=el.value;
+  v.classList.add('bump');setTimeout(()=>v.classList.remove('bump'),200);
+  const p=(el.value-el.min)/(el.max-el.min)*100;
+  el.style.background='linear-gradient(90deg,#0a8a6e '+p+'%,var(--color-border-tertiary) '+p+'%)';
+}
+document.querySelectorAll('input[type=range]').forEach(s=>{
+  const p=(s.value-s.min)/(s.max-s.min)*100;
+  s.style.background='linear-gradient(90deg,#0a8a6e '+p+'%,var(--color-border-tertiary) '+p+'%)';
+});
+
+function onName(v){
+  userName=v.trim().split(' ')[0]||'';
+  updateGreets();
+}
+function updateGreets(){
+  const n=userName||'there';
+  const msgs={
+    greet2txt:`Let's understand your mindset, ${n}!`,
+    greet3txt:`${n}, tell us about your support system.`,
+    greet4txt:`${n}, give us the real story!`,
+    greet5txt:`${n}, how is your bond with your teachers?`,
+    greet6txt:`${n}, real-world experience is invaluable!`,
+    greet7txt:`${n}, the best investment is in yourself!`,
+    greet8txt:`Almost done, ${n} — final stretch! 🏁`,
+  };
+  Object.entries(msgs).forEach(([id,msg])=>{const el=document.getElementById(id);if(el)el.textContent=msg;});
+}
+
+function togMotiv(el,val){
+  el.classList.toggle('on');
+  if(el.classList.contains('on')){if(!motivPicks.includes(val))motivPicks.push(val);}
+  else motivPicks=motivPicks.filter(v=>v!==val);
+  picks.motivations=motivPicks.join(', ');
+}
+function pickChip(groupId,el,key,val){
+  document.querySelectorAll('#'+groupId+' .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');picks[key]=val;
+}
+function pickYN(groupId,el,val,key){
+  const g=document.getElementById(groupId);
+  g.querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');
+  el.classList.add(val==='Yes'?'y':'n');picks[key]=val;
+}
+function pickStar(n){
+  starVal=n;
+  document.querySelectorAll('#starRow .star').forEach((s,i)=>s.classList.toggle('on',i<n));
+  picks.star=n;
+}
+
+const validators={
+  1:()=>{
+    const errs=[];
+    if(!document.getElementById('name').value.trim())errs.push('Full Name');
+    if(!document.getElementById('enrollNo').value.trim())errs.push('Enrollment No.');
+    if(!document.getElementById('branch').value)errs.push('Branch');
+    const em=document.getElementById('email').value.trim();
+    if(!em||!em.includes('@'))errs.push('Valid Email');
+    return errs;
+  },
+  2:()=>{
+    const errs=[];
+    if(motivPicks.length===0)errs.push('Motivation (pick at least one)');
+    if(!document.getElementById('distractions').value.trim())errs.push('Biggest Distractions');
+    return errs;
+  },
+  3:()=>{
+    const errs=[];
+    if(!picks.peerPressure)errs.push('Peer Pressure answer');
+    if(!document.getElementById('familyExp').value.trim())errs.push('Family Expectations');
+    return errs;
+  },
+  4:()=>{
+    const errs=[];
+    if(!document.getElementById('uniEnjoy').value.trim())errs.push('University Enjoy');
+    return errs;
+  },
+  5:()=>{
+    const errs=[];
+    if(!picks.facultyFreq)errs.push('Faculty Interaction');
+    if(!picks.facApproach)errs.push('Faculty Approachable');
+    return errs;
+  },
+  6:()=>{
+    const errs=[];
+    if(!picks.internship)errs.push('Internship answer');
+    return errs;
+  },
+  7:()=>{
+    const errs=[];
+    if(!picks.selfLearn)errs.push('Self-Learning answer');
+    if(!picks.challenge)errs.push('University Challenge answer');
+    return errs;
+  },
+  8:()=>{
+    const errs=[];
+    if(!picks.accreditation)errs.push('Accreditation answer');
+    if(!picks.entre)errs.push('Entrepreneurial Mindset');
+    if(!starVal)errs.push('Star Rating');
+    return errs;
+  },
+};
+
+function showErr(sec,errs){
+  const b=document.getElementById('err'+sec);
+  if(!b)return;
+  if(!errs.length){b.classList.remove('show');return;}
+  document.getElementById('err'+sec+'msg').textContent='Missing: '+errs.join(', ');
+  b.classList.add('show');
+}
+
+function showXP(amt,label){
+  xp+=amt;
+  document.getElementById('xpDisplay').textContent=xp;
+  const t=document.getElementById('xpToast');
+  document.getElementById('xpToastTxt').textContent='+'+amt+' XP — '+label;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function showBadge(sec){
+  const b=BADGES[sec-1];earnedBadges.push(b);
+  document.getElementById('btIco').textContent=b.ico;
+  document.getElementById('btTitle').textContent=b.name+' badge unlocked!';
+  document.getElementById('btSub').textContent='Section '+sec+' complete';
+  const t=document.getElementById('badgeToast');
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function next(sec){
+  const errs=validators[sec]?validators[sec]():[];
+  if(errs.length){showErr(sec,errs);return;}
+  document.getElementById('err'+sec)?.classList.remove('show');
+  showBadge(sec);
+  showXP(50,'Section '+sec+' complete');
+  document.getElementById('sec'+sec).style.display='none';
+  cur=sec+1;
+  document.getElementById('sec'+cur).style.display='block';
+  refreshProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function prev(sec){
+  document.getElementById('sec'+sec).style.display='none';
+  cur=sec-1;
+  document.getElementById('sec'+cur).style.display='block';
+  refreshProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function submitSurvey(){
+  const errs=validators[8]?validators[8]():[];
+  if(errs.length){showErr(8,errs);return;}
+  showXP(100,'Survey complete!');
+  document.getElementById('surveyArea').style.display='none';
+  document.getElementById('successArea').style.display='block';
+  document.getElementById('finalXP').textContent=xp;
+  launchConfetti();
+  const br=document.getElementById('badgesRow');
+  br.innerHTML=earnedBadges.map(b=>`<div class="b-item"><div class="b-ico">${b.ico}</div><div class="b-name">${b.name}</div></div>`).join('');
+  sendPrompt('The student just completed the Student Pulse 2026 survey with '+xp+' XP and '+earnedBadges.length+' badges! They studied '+document.getElementById('branch').value+'. What insights can you share about their academic journey?');
+}
+
+function launchConfetti(){
+  const w=document.getElementById('confWrap');
+  const colors=['#0a8a6e','#e8a825','#6b5ce7','#c94040','#12b88f','#f5c842','#c94080'];
+  for(let i=0;i<60;i++){
+    const p=document.createElement('div');
+    p.className='conf-particle';
+    const s=Math.random()*8+4;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;top:0;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*1.5+1}s;animation-delay:${Math.random()*.8}s;border-radius:${Math.random()>0.5?'50%':'2px'}`;
+    w.appendChild(p);
+  }
+}
+
+function initParticles(){
+  for(let s=1;s<=8;s++){
+    const c=document.getElementById('bp'+s);if(!c)continue;
+    for(let i=0;i<7;i++){
+      const p=document.createElement('span');
+      const sz=Math.random()*10+4;
+      p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;bottom:0;animation-duration:${Math.random()*3+2}s;animation-delay:${Math.random()*3}s`;
+      c.appendChild(p);
+    }
+  }
+}
+
+const startParticles=document.getElementById('startParticles');
+for(let i=0;i<12;i++){
+  const p=document.createElement('span');
+  const sz=Math.random()*14+5;
+  p.style.cssText=`position:absolute;width:${sz}px;height:${sz}px;border-radius:50%;background:rgba(255,255,255,.35);left:${Math.random()*100}%;bottom:0;animation:bp-float ${Math.random()*3+2}s ${Math.random()*3}s linear infinite`;
+  startParticles.appendChild(p);
+}
+</script>
